@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Портфолио · веб-разработка</title>
+<meta name="description" content="Лендинги, сайты-визитки и 3D-анимация для веба. Примеры работ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f3f4f1; --fg: #15181d; --muted: #5d636d; --card: #ffffff; --line: #dfe2dc; --accent: #2f6b4f;
+  --f-head: "Unbounded", "Segoe UI", sans-serif; --f-body: "Golos Text", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #121417; --fg: #eef0ec; --muted: #9aa1a9; --card: #1b1e22; --line: #2b3036; --accent: #7cc4a0; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 20px; padding-block: 64px 48px; }
+h1 { font-family: var(--f-head); font-weight: 700; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.08; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 36em; margin: 20px 0 0; font-size: 1.1rem; }
+.skills { display: flex; flex-wrap: wrap; gap: 8px; margin: 26px 0 0; padding: 0; list-style: none; }
+.skills li { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 0.9rem; }
+h2 { font-family: var(--f-head); font-weight: 500; font-size: 1.3rem; margin: 64px 0 20px; }
+.works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.work { display: grid; gap: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; text-decoration: none; color: inherit; transition: transform .2s ease, border-color .2s ease; }
+.work:hover, .work:focus-visible { transform: translateY(-3px); border-color: var(--accent); outline: none; }
+.work .kind { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+.work h3 { font-family: var(--f-head); font-weight: 500; font-size: 1.25rem; margin: 0; }
+.work p { margin: 0; color: var(--muted); }
+.work .go { font-weight: 500; color: var(--accent); }
+footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+footer a { color: inherit; }
+@media (max-width: 640px) { .works { grid-template-columns: minmax(0, 1fr); } .wrap { padding-block: 40px; } }
+@media (prefers-reduced-motion: reduce) { .work { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Сайты, лендинги и 3D-анимация для веба</h1>
+  <p class="lede">Делаю адаптивные сайты, которые хорошо выглядят на телефоне и компьютере. Сначала показываю первый экран, потом дорабатываю остальное. Исходники передаю заказчику.</p>
+  <ul class="skills">
+    <li>HTML / CSS / JavaScript</li><li>Адаптивная вёрстка</li><li>Three.js / WebGL</li><li>Лендинги</li><li>Kotlin / Android</li>
+  </ul>
+
+  <h2>Работы</h2>
+  <div class="works">
+    <a class="work" href="calendars/">
+      <span class="kind">Продающий лендинг</span>
+      <h3>Квартальные календари</h3>
+      <p>Одностраничник для типографии: варианты ламинации, пружин и блоков, прайс-таблица, контакты.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="work" href="meadowlight/">
+      <span class="kind">Сайт с 3D-графикой</span>
+      <h3>Meadowlight</h3>
+      <p>Сайт садовой студии на английском. 3D-цветок раскрывается при прокрутке, плывут облака, падают лепестки.</p>
+      <span class="go">Открыть →</span>
+    </a>
+  </div>
+
+  <footer>
+    <span>© 2026</span>
+    <a href="https://github.com/said240705">github.com/said240705</a>
+  </footer>
+</div>
+</body>
+</html>

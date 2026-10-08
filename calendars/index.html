@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Квартальные календари</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+/* Layout: centered 1120px column; client's blue/red print-shop palette kept, refined. Photo slots are placeholders until the client sends photos. Single light theme by choice (print catalogue look). */
+:root {
+  --blue: #2440a0;
+  --blue-deep: #172a6e;
+  --red: #e1322d;
+  --ink: #161b2e;
+  --muted: #5b6275;
+  --paper: #f5f6fa;
+  --card: #ffffff;
+  --line: #dde1ec;
+  --ph: #e4e7ef;
+  --f-head: "Oswald", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Golos Text", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--f-body); font-size: 16px; line-height: 1.55; color: var(--ink); background: var(--paper); overflow-x: hidden; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+h1, h2, h3 { font-family: var(--f-head); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; margin: 0; text-wrap: balance; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+
+/* Header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--blue); color: #fff; }
+.top .wrap { display: flex; align-items: center; gap: 28px; padding-block: 14px; flex-wrap: wrap; }
+.logo { font-family: var(--f-head); font-size: 1.7rem; letter-spacing: 0.04em; text-decoration: none; }
+.contacts { display: flex; gap: 24px; font-size: 0.88rem; opacity: 0.9; flex-wrap: wrap; }
+.contacts a { text-decoration: none; }
+.top nav { margin-left: auto; display: flex; gap: 26px; font-family: var(--f-head); font-size: 1.05rem; letter-spacing: 0.06em; }
+.top nav a { text-decoration: none; padding-block: 4px; border-bottom: 2px solid transparent; }
+.top nav a:hover { border-color: #fff; }
+
+/* Hero */
+.hero { position: relative; color: #fff; text-align: center; padding-block: 92px 84px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(14, 22, 52, 0.55), rgba(14, 22, 52, 0.72)), repeating-linear-gradient(90deg, #45518a 0 2px, transparent 2px 72px), linear-gradient(135deg, #59628d, #2a3361); }
+.hero .rings { display: flex; justify-content: center; gap: 22%; position: absolute; top: 18px; left: 0; right: 0; opacity: 0.35; }
+.hero .rings span { width: 70px; height: 14px; border-radius: 7px; border: 3px solid #fff; }
+.hero h1 { font-size: clamp(2.1rem, 5.6vw, 3.9rem); line-height: 1.08; position: relative; }
+.hero p { margin: 22px auto 0; font-family: var(--f-head); font-size: clamp(0.95rem, 2vw, 1.2rem); letter-spacing: 0.05em; text-transform: uppercase; max-width: 46em; position: relative; }
+.hero .cta { display: inline-block; margin-top: 34px; position: relative; }
+.ph-note { position: absolute; bottom: 12px; right: 16px; font-size: 0.72rem; opacity: 0.7; }
+
+.btn { font-family: var(--f-head); font-size: 1.05rem; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; background: var(--red); color: #fff; padding: 15px 34px; border-radius: 6px; box-shadow: 0 6px 18px rgba(225, 50, 45, 0.35); transition: transform .15s ease; }
+.btn:hover { transform: translateY(-2px); }
+
+/* Quality strip */
+.quality { margin-top: -34px; position: relative; z-index: 2; }
+.quality .box { background: var(--red); color: #fff; border-radius: 10px; padding: 22px 26px; text-align: center; font-family: var(--f-head); font-size: clamp(1.05rem, 2.4vw, 1.4rem); letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.35; box-shadow: 0 14px 30px rgba(23, 42, 110, 0.18); max-width: 820px; margin: 0 auto; }
+.quality small { display: block; margin-top: 14px; text-align: center; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+/* Size spec */
+.spec { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 820px; margin: 34px auto 0; }
+.spec div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; text-align: center; }
+.spec b { display: block; font-family: var(--f-head); font-size: 1.6rem; color: var(--blue); font-variant-numeric: tabular-nums; }
+.spec span { font-size: 0.85rem; color: var(--muted); }
+
+/* Option sections */
+.opt { padding-block: 64px 0; }
+.opt h2 { text-align: center; font-size: clamp(1.7rem, 3.6vw, 2.3rem); }
+.opt .sub { text-align: center; color: var(--muted); margin: 8px auto 0; max-width: 40em; }
+.grid { display: grid; gap: 22px; margin-top: 30px; }
+.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; margin-inline: auto; }
+.grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.item { display: grid; gap: 12px; margin: 0; }
+.tag { background: var(--blue); color: #fff; font-family: var(--f-head); text-transform: uppercase; letter-spacing: 0.05em; text-align: center; padding: 11px 8px; border-radius: 6px; font-size: 1.02rem; }
+.photo { aspect-ratio: 4 / 3; max-width: 100%; border-radius: 8px; background: var(--ph); border: 1px dashed #b8bfd2; display: grid; place-items: center; text-align: center; padding: 12px; color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; overflow: hidden; }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo svg { width: 34px; height: 34px; margin: 0 auto 8px; display: block; opacity: 0.55; }
+.item figcaption { font-size: 0.88rem; color: var(--muted); text-align: center; }
+
+/* Spring swatches */
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; border: 1px solid rgba(255, 255, 255, 0.6); }
+
+/* Package */
+.compare { display: flex; justify-content: flex-end; margin-top: 64px; }
+.compare span { background: var(--red); color: #fff; font-family: var(--f-head); text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 26px; transform: rotate(-3deg); box-shadow: 0 8px 18px rgba(225, 50, 45, 0.3); }
+.pack { margin-top: 22px; display: grid; gap: 20px; }
+.pack .banner { background: var(--blue); color: #fff; border-radius: 10px; padding: 24px; text-align: center; font-family: var(--f-head); text-transform: uppercase; letter-spacing: 0.04em; font-size: clamp(1rem, 2.2vw, 1.25rem); line-height: 1.4; }
+.pack .photo { aspect-ratio: 21 / 8; }
+
+/* Prices */
+.prices { padding-block: 72px 0; }
+.table-wrap { overflow-x: auto; margin-top: 28px; background: var(--card); border-radius: 12px; border: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; min-width: 520px; font-variant-numeric: tabular-nums; }
+th, td { padding: 15px 18px; text-align: right; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-family: var(--f-head); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; color: var(--blue); background: #eef1fa; }
+tbody tr:last-child td { border-bottom: 0; }
+td b { font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); margin-top: 10px; }
+
+/* Contacts */
+.contact { margin-top: 72px; background: var(--blue-deep); color: #fff; }
+.contact .wrap { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; padding-block: 56px; align-items: center; }
+.contact h2 { font-size: clamp(1.7rem, 3.6vw, 2.3rem); }
+.contact p { margin: 12px 0 0; opacity: 0.85; max-width: 32em; }
+.lines { display: grid; gap: 14px; }
+.lines div { display: grid; gap: 2px; }
+.lines span { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.7; }
+.lines a, .lines b { font-family: var(--f-head); font-size: 1.35rem; font-weight: 500; text-decoration: none; letter-spacing: 0.02em; }
+footer { background: var(--blue-deep); color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+footer .wrap { padding-block: 18px; }
+
+@media (max-width: 820px) {
+  .grid.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact .wrap { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .contacts { display: none; }
+  .top .wrap { gap: 16px; }
+  .top nav { gap: 18px; }
+  .hero { padding-block: 70px 76px; }
+  .spec { grid-template-columns: minmax(0, 1fr); }
+  .grid { gap: 16px; }
+  .grid.two { grid-template-columns: minmax(0, 1fr); }
+  .tag { font-size: 0.92rem; }
+  .compare { justify-content: center; }
+  .pack .photo { aspect-ratio: 4 / 3; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="cam" viewBox="0 0 24 24"><path fill="currentColor" d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#">ЛОГО</a>
+    <div class="contacts">
+      <a href="tel:+70000000000">+7 (000) 000-00-00</a>
+      <span>mail@example.ru</span>
+    </div>
+    <nav aria-label="Разделы">
+      <a href="#prices">Цены</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" aria-labelledby="hero-h">
+  <div class="rings" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="wrap">
+    <h1 id="hero-h">Квартальные календари<br>премиум качества</h1>
+    <p>Миди: 335×230 постер · 335×210 подложка · 50 мм рекламное поле</p>
+    <a class="btn cta" href="#prices">Узнать цену</a>
+  </div>
+  <span class="ph-note">Здесь будет фото-баннер календаря на трёх пружинах</span>
+</section>
+
+<div class="wrap quality">
+  <div class="box">Качество печати японских офсетных машин<br>Плотный картон 325 г/м² (толщиной 0,5 мм)</div>
+  <small>Плотность картона с ламинацией 510 г/м² — почти как у пластиковой карты (540 мкм)</small>
+  <div class="spec">
+    <div><b>335×230</b><span>постер, мм</span></div>
+    <div><b>335×210</b><span>подложка, мм</span></div>
+    <div><b>50</b><span>рекламное поле, мм</span></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="opt" aria-labelledby="lam-h">
+    <h2 id="lam-h">Ламинация</h2>
+    <div class="grid two">
+      <figure class="item"><div class="tag">Матовая</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото открытки с матовой ламинацией</div></div></figure>
+      <figure class="item"><div class="tag">Глянцевая</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото открытки с глянцевой ламинацией</div></div></figure>
+    </div>
+  </section>
+
+  <section class="opt" aria-labelledby="spring-h">
+    <h2 id="spring-h">Пружина</h2>
+    <div class="grid four">
+      <figure class="item"><div class="tag"><i class="dot" style="background:#fff"></i>Белая</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото с белой пружиной</div></div></figure>
+      <figure class="item"><div class="tag"><i class="dot" style="background:#111"></i>Чёрная</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото с чёрной пружиной</div></div></figure>
+      <figure class="item"><div class="tag"><i class="dot" style="background:linear-gradient(135deg,#f2f2f2,#9da3ad)"></i>Серебро</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото с серебряной пружиной</div></div></figure>
+      <figure class="item"><div class="tag"><i class="dot" style="background:linear-gradient(135deg,#d9a46b,#8a5a2b)"></i>Бронза</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото с бронзовой пружиной</div></div></figure>
+    </div>
+  </section>
+
+  <section class="opt" aria-labelledby="blocks-h">
+    <h2 id="blocks-h">Блоки</h2>
+    <div class="grid four">
+      <figure class="item"><div class="tag">Офсетные</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото офсетного блока</div></div></figure>
+      <figure class="item"><div class="tag">Мелованные</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото мелованного блока</div></div></figure>
+      <figure class="item"><div class="tag">Серебро</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото блока «Серебро»</div></div></figure>
+      <figure class="item"><div class="tag">Вердана</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото блока «Вердана»</div></div></figure>
+    </div>
+  </section>
+
+  <section class="opt" aria-labelledby="piccolo-h">
+    <h2 id="piccolo-h">Пикколо</h2>
+    <p class="sub">Курсор-бегунок для отметки текущей даты</p>
+    <div class="grid two">
+      <figure class="item"><div class="tag">Золото</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото пикколо золотого цвета</div></div></figure>
+      <figure class="item"><div class="tag">Серебро</div><div class="photo"><div><svg><use href="#cam"/></svg>Фото пикколо серебряного цвета</div></div></figure>
+    </div>
+  </section>
+
+  <div class="compare"><span>Сравните с конкурентами!</span></div>
+  <div class="pack">
+    <div class="banner">Каждый календарь упакован в индивидуальный пакет —<br>это придаёт ему премиальный вид и делает прекрасным подарком</div>
+    <div class="photo"><div><svg><use href="#cam"/></svg>Фото календаря в пакете</div></div>
+  </div>
+
+  <section class="prices" id="prices" aria-labelledby="prices-h">
+    <h2 id="prices-h" style="text-align:center;font-size:clamp(1.7rem,3.6vw,2.3rem)">Цены</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Тираж</th><th>Офсетный блок</th><th>Мелованный блок</th><th>Срок</th></tr></thead>
+        <tbody>
+          <tr><td><b>50 шт.</b></td><td>— ₽</td><td>— ₽</td><td>— дн.</td></tr>
+          <tr><td><b>100 шт.</b></td><td>— ₽</td><td>— ₽</td><td>— дн.</td></tr>
+          <tr><td><b>300 шт.</b></td><td>— ₽</td><td>— ₽</td><td>— дн.</td></tr>
+          <tr><td><b>500 шт.</b></td><td>— ₽</td><td>— ₽</td><td>— дн.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Цены за штуку. Таблица заполняется по прайсу заказчика.</p>
+  </section>
+</main>
+
+<section class="contact" id="contacts" aria-labelledby="contacts-h">
+  <div class="wrap">
+    <div>
+      <h2 id="contacts-h">Закажите календари</h2>
+      <p>Позвоните или напишите на почту: поможем подобрать пружину, блок и ламинацию, рассчитаем тираж и сроки.</p>
+    </div>
+    <div class="lines">
+      <div><span>Телефон</span><b>+7 (000) 000-00-00</b></div>
+      <div><span>Почта</span><b>mail@example.ru</b></div>
+      <div><span>Сайт</span><b>www.example.ru</b></div>
+    </div>
+  </div>
+</section>
+<footer><div class="wrap">© 2026 · Квартальные календари премиум качества</div></footer>
+
+</html>

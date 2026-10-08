@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meadowlight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:ital,wght@0,400;1,400&display=swap">
+<style>
+/* Layout: fixed WebGL sky behind a single left-weighted text column; the 3D flower holds the right half and blooms with scroll. Deliberately single (daylight) theme. */
+:root {
+  --sky-top: #c9dde6;
+  --sky-low: #edf0e2;
+  --ink: #1d2a25;
+  --ink-soft: #4b5b53;
+  --moss: #34502f;
+  --petal: #d4869f;
+  --pollen: #e6bb3f;
+  --veil: rgba(244, 247, 240, 0.72);
+  --line: rgba(29, 42, 37, 0.16);
+  --f-display: "Young Serif", "Iowan Old Style", Georgia, serif;
+  --f-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--sky-top) 0%, #dfe8e3 45%, var(--sky-low) 100%) fixed, var(--sky-low);
+  overflow-x: hidden;
+}
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+.wrap { position: relative; z-index: 1; max-width: 1140px; margin: 0 auto; padding-inline: 24px; }
+
+nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 22px; flex-wrap: wrap; }
+.brand { font-family: var(--f-display); font-size: 1.35rem; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.brand i { width: 12px; height: 12px; border-radius: 50%; background: var(--pollen); box-shadow: 0 0 0 4px rgba(212, 134, 159, 0.55); }
+nav ul { list-style: none; display: flex; gap: 24px; margin: 0; padding: 0; font-size: 0.95rem; }
+nav a { color: var(--ink-soft); text-decoration: none; }
+nav a:hover, nav a:focus-visible { color: var(--ink); }
+
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; }
+
+.eyebrow { font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--moss); }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 400; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(3rem, 8.4vw, 6.6rem); line-height: 0.98; }
+h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); line-height: 1.05; }
+h3 { font-size: 1.45rem; line-height: 1.2; }
+p { margin: 0; max-width: 34em; }
+
+.hero { min-height: 84svh; display: flex; flex-direction: column; justify-content: center; gap: 26px; padding-block: 40px 80px; max-width: 600px; }
+.hero h1 em { font-style: normal; color: var(--moss); }
+.lede { font-size: 1.15rem; color: var(--ink-soft); }
+.actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn { font: 600 0.98rem/1 var(--f-body); padding: 15px 24px; border-radius: 999px; text-decoration: none; border: 1.5px solid var(--moss); cursor: pointer; transition: transform .2s ease, background .2s ease; }
+.btn.solid { background: var(--moss); color: #f3f6ee; }
+.btn.ghost { background: transparent; color: var(--moss); }
+.btn:hover { transform: translateY(-2px); }
+
+section.block { padding-block: 96px; display: grid; gap: 34px; max-width: 620px; }
+
+.species { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.species li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 20px; align-items: end; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.species .latin { font-family: var(--f-mono); font-style: italic; font-size: 0.85rem; color: var(--ink-soft); grid-column: 1 / -1; }
+.species .common { font-family: var(--f-display); font-size: 1.5rem; line-height: 1.1; min-width: 0; }
+.months { display: grid; grid-template-columns: repeat(12, 14px); gap: 3px; }
+.months span { height: 14px; border-radius: 3px; background: rgba(29, 42, 37, 0.1); font: 500 0 / 1 var(--f-mono); }
+.months span.on { background: var(--petal); }
+.months-key { display: grid; grid-template-columns: repeat(12, 14px); gap: 3px; font: 0.62rem/1 var(--f-mono); color: var(--ink-soft); text-align: center; justify-self: end; }
+
+.clouds { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.cloud-row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 20px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.cloud-row b { font-family: var(--f-mono); font-weight: 400; font-style: italic; font-size: 0.9rem; color: var(--moss); }
+.cloud-row p { color: var(--ink-soft); }
+.cloud-row strong { color: var(--ink); font-weight: 600; }
+
+.quote { font-family: var(--f-display); font-size: clamp(1.6rem, 3.4vw, 2.4rem); line-height: 1.25; max-width: 22em; }
+.quote cite { display: block; margin-top: 16px; font: normal 0.85rem var(--f-mono); color: var(--ink-soft); }
+
+form { display: flex; gap: 10px; flex-wrap: wrap; }
+label.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+input[type=email] { flex: 1 1 240px; min-width: 0; font: 1rem var(--f-body); padding: 14px 20px; border-radius: 999px; border: 1.5px solid var(--line); background: rgba(255, 255, 255, 0.7); color: var(--ink); }
+.status { font-size: 0.95rem; color: var(--moss); min-height: 1.6em; }
+
+footer { padding-block: 40px 56px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 0.85rem; color: var(--ink-soft); }
+footer span { font-family: var(--f-mono); }
+
+/* Phone: flower sits above the hero text; later sections get a soft veil so text stays readable over the 3D scene. */
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  nav ul { display: none; }
+  .hero { min-height: 0; padding-top: 44svh; padding-bottom: 56px; }
+  section.block { padding: 28px 22px; margin-block: 40px; background: var(--veil); border-radius: 22px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .cloud-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .species li { grid-template-columns: minmax(0, 1fr); }
+  .months-key { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn { transition: none; }
+}
+</style>
+
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <nav aria-label="Main">
+    <a class="brand" href="#top" id="top"><i></i>Meadowlight</a>
+    <ul>
+      <li><a href="#grow">What we grow</a></li>
+      <li><a href="#weather">Weather</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <span class="eyebrow">Seasonal garden studio · Est. 2019</span>
+    <h1>Grow something <em>slow.</em></h1>
+    <p class="lede">We design small meadow gardens for city balconies, backyards and rooftops. Native flowers, honest soil, and a planting calendar that follows the weather instead of the shop window.</p>
+    <div class="actions">
+      <a class="btn solid" href="#visit">Plan your garden</a>
+      <a class="btn ghost" href="#grow">See the seasons</a>
+    </div>
+  </header>
+
+  <section class="block" id="grow" aria-labelledby="grow-h">
+    <span class="eyebrow">What we grow</span>
+    <h2 id="grow-h">Three flowers that carry a meadow from June to October.</h2>
+    <p>Each garden starts with a short list. These three do most of the work: they feed pollinators, survive a dry August, and keep flowering after the first cool nights.</p>
+    <div>
+      <div class="months-key" aria-hidden="true"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+      <ul class="species">
+        <li>
+          <span class="latin">Echinacea purpurea</span>
+          <span class="common">Purple coneflower</span>
+          <span class="months" data-on="6,7,8" aria-label="Blooms July to September"></span>
+        </li>
+        <li>
+          <span class="latin">Cosmos bipinnatus</span>
+          <span class="common">Garden cosmos</span>
+          <span class="months" data-on="5,6,7,8,9" aria-label="Blooms June to October"></span>
+        </li>
+        <li>
+          <span class="latin">Lavandula angustifolia</span>
+          <span class="common">English lavender</span>
+          <span class="months" data-on="5,6,7" aria-label="Blooms June to August"></span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="weather" aria-labelledby="weather-h">
+    <span class="eyebrow">Weather we work with</span>
+    <h2 id="weather-h">We read the sky before we pick up a spade.</h2>
+    <div class="clouds">
+      <div class="cloud-row"><b>Cumulus humilis</b><p><strong>Plant out.</strong> Small fair-weather clouds mean a calm, mild day. Young roots settle best now.</p></div>
+      <div class="cloud-row"><b>Stratus</b><p><strong>Transplant shade lovers.</strong> Soft grey light keeps leaves from scorching while they recover.</p></div>
+      <div class="cloud-row"><b>Cumulonimbus</b><p><strong>Wait a day.</strong> Heavy rain washes seed out of fresh beds. We stake tall stems and go home.</p></div>
+    </div>
+  </section>
+
+  <section class="block" aria-label="From a client">
+    <blockquote class="quote" style="margin:0">
+      “Our balcony was four pots of dead basil. Now there are bees on it every morning.”
+      <cite>Hannah R. · 6 m² balcony garden, planted May 2025</cite>
+    </blockquote>
+  </section>
+
+  <section class="block" id="visit" aria-labelledby="visit-h">
+    <span class="eyebrow">Visit</span>
+    <h2 id="visit-h">Start with one season.</h2>
+    <p>Leave your email and we will send our spring planting calendar, plus a time to talk through your space.</p>
+    <form id="signup" novalidate>
+      <label class="sr" for="email">Email address</label>
+      <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      <button class="btn solid" type="submit">Send me the calendar</button>
+    </form>
+    <p class="status" id="status" role="status"></p>
+  </section>
+
+  <footer>
+    <div>© 2026 Meadowlight Garden Studio</div>
+    <span>Built with Three.js</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Bloom-month strips
+document.querySelectorAll('.months').forEach(function (el) {
+  var on = el.dataset.on.split(',').map(Number);
+  for (var i = 0; i < 12; i++) {
+    var s = document.createElement('span');
+    if (on.indexOf(i) !== -1) s.className = 'on';
+    el.appendChild(s);
+  }
+});
+
+// Signup (no backend in the demo)
+document.getElementById('signup').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var input = document.getElementById('email');
+  var status = document.getElementById('status');
+  if (!input.checkValidity() || !input.value) {
+    status.textContent = 'Enter an email address like name@example.com.';
+    input.focus();
+    return;
+  }
+  status.textContent = 'Thanks. The spring calendar is on its way.';
+  input.value = '';
+});
+
+(function () {
+  var canvas = document.getElementById('scene');
+  if (typeof THREE === 'undefined') { canvas.hidden = true; return; }
+
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  } catch (err) { canvas.hidden = true; return; }
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  var scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0xdde7e4, 12, 26);
+  var camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+  camera.position.set(0, 0, 10);
+
+  scene.add(new THREE.HemisphereLight(0xf6f8ff, 0x6f8a5c, 0.95));
+  var sun = new THREE.DirectionalLight(0xfff1d6, 0.85);
+  sun.position.set(4, 6, 5);
+  scene.add(sun);
+
+  function mat(hex, extra) {
+    var o = { color: hex, roughness: 0.85, metalness: 0, flatShading: true };
+    for (var k in extra) o[k] = extra[k];
+    return new THREE.MeshStandardMaterial(o);
+  }
+
+  // ---- Flower ----
+  function petalGeometry(w, len, curl) {
+    var g = new THREE.SphereGeometry(1, 14, 8);
+    g.scale(w, 0.06, len);
+    g.translate(0, 0, len);
+    var p = g.attributes.position;
+    for (var i = 0; i < p.count; i++) {
+      var z = p.getZ(i);
+      p.setY(i, p.getY(i) + curl * z * z);
+    }
+    g.computeVertexNormals();
+    return g;
+  }
+
+  var flower = new THREE.Group();
+  var head = new THREE.Group();
+  head.position.y = 1.25;
+  head.rotation.x = 0.85;
+  flower.add(head);
+
+  var outer = [], inner = [];
+  var outerGeo = petalGeometry(0.34, 0.85, 0.1);
+  var innerGeo = petalGeometry(0.26, 0.6, 0.16);
+  var outerMat = mat(0xd4869f);
+  var innerMat = mat(0xe8a9bc);
+  function ring(list, count, geo, material, offset) {
+    for (var i = 0; i < count; i++) {
+      var yaw = new THREE.Group();
+      yaw.rotation.y = (i / count) * Math.PI * 2 + offset;
+      var pitch = new THREE.Group();
+      pitch.add(new THREE.Mesh(geo, material));
+      yaw.add(pitch);
+      head.add(yaw);
+      list.push(pitch);
+    }
+  }
+  ring(outer, 12, outerGeo, outerMat, 0);
+  ring(inner, 9, innerGeo, innerMat, 0.2);
+
+  var disc = new THREE.Mesh(new THREE.IcosahedronGeometry(0.42, 1), mat(0xc98b2c));
+  disc.scale.y = 0.55;
+  disc.position.y = 0.1;
+  head.add(disc);
+  var pollen = new THREE.Mesh(new THREE.IcosahedronGeometry(0.3, 1), mat(0xe6bb3f));
+  pollen.scale.y = 0.6;
+  pollen.position.y = 0.26;
+  head.add(pollen);
+
+  var stemCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 1.2, 0),
+    new THREE.Vector3(0.12, 0, 0.1),
+    new THREE.Vector3(-0.08, -1.6, 0),
+    new THREE.Vector3(0.1, -3.4, -0.1)
+  ]);
+  var stemMat = mat(0x4f7a45);
+  flower.add(new THREE.Mesh(new THREE.TubeGeometry(stemCurve, 40, 0.07, 6, false), stemMat));
+
+  function leaf(y, side, len) {
+    var g = petalGeometry(0.28, len, 0.12);
+    var m = new THREE.Mesh(g, mat(0x5e8c4f));
+    var holder = new THREE.Group();
+    holder.position.copy(stemCurve.getPoint((1.2 - y) / 4.6));
+    holder.rotation.y = side > 0 ? Math.PI / 2 : -Math.PI / 2;
+    holder.rotation.z = side * 0.1;
+    m.rotation.x = -0.55;
+    holder.add(m);
+    flower.add(holder);
+    return m;
+  }
+  var leaves = [leaf(-0.9, 1, 0.75), leaf(-1.9, -1, 0.9)];
+  scene.add(flower);
+
+  // ---- Clouds ----
+  var cloudMat = mat(0xffffff, { roughness: 1 });
+  var clouds = [];
+  function makeCloud(x, y, z, s, speed) {
+    var g = new THREE.Group();
+    var n = 5 + Math.floor(Math.random() * 3);
+    for (var i = 0; i < n; i++) {
+      var r = 0.45 + Math.random() * 0.55;
+      var puff = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), cloudMat);
+      puff.position.set((i - (n - 1) / 2) * 0.55 + (Math.random() - 0.5) * 0.2,
+                        (1 - Math.abs(i - (n - 1) / 2) / n) * 0.45 + Math.random() * 0.15,
+                        (Math.random() - 0.5) * 0.5);
+      puff.scale.y = 0.78;
+      g.add(puff);
+    }
+    g.position.set(x, y, z);
+    g.scale.setScalar(s);
+    g.userData = { speed: speed, baseY: y, phase: Math.random() * 6 };
+    scene.add(g);
+    clouds.push(g);
+  }
+  makeCloud(-5, 2.6, -4, 1.0, 0.18);
+  makeCloud(3.5, 3.4, -7, 1.4, 0.11);
+  makeCloud(-1, -1.5, -9, 1.7, 0.08);
+  makeCloud(7, 0.6, -5, 0.9, 0.15);
+  makeCloud(-8, -3.2, -6, 1.2, 0.1);
+
+  // ---- Drifting petals ----
+  var drift = [];
+  var driftGeo = petalGeometry(0.1, 0.16, 0.6);
+  var driftMats = [mat(0xd4869f), mat(0xe8a9bc), mat(0xf3eedc)];
+  for (var i = 0; i < 34; i++) {
+    var m = new THREE.Mesh(driftGeo, driftMats[i % 3]);
+    m.position.set((Math.random() - 0.5) * 16, (Math.random() - 0.5) * 9, -3 + Math.random() * 5);
+    m.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
+    m.userData = { fall: 0.12 + Math.random() * 0.2, sway: Math.random() * 6, spin: 0.3 + Math.random() * 0.8 };
+    scene.add(m);
+    drift.push(m);
+  }
+
+  // ---- Layout ----
+  var view = { w: 10, h: 6, narrow: false };
+  function resize() {
+    var w = window.innerWidth, h = window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    view.h = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
+    view.w = view.h * camera.aspect;
+    view.narrow = w <= 760;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  var mouse = { x: 0, y: 0 }, mouseT = { x: 0, y: 0 };
+  window.addEventListener('pointermove', function (e) {
+    mouseT.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseT.y = (e.clientY / window.innerHeight) * 2 - 1;
+  }, { passive: true });
+
+  function progress() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+  }
+  function smooth(a, b, x) { var t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  var bloom = reduce ? 1 : 0.35;
+  function setBloom(b) {
+    for (var i = 0; i < outer.length; i++) outer[i].rotation.x = lerp(-1.4, -0.14, b);
+    for (var j = 0; j < inner.length; j++) inner[j].rotation.x = lerp(-1.5, -0.6, b);
+    pollen.scale.set(lerp(0.7, 1, b), lerp(0.4, 0.6, b), lerp(0.7, 1, b));
+  }
+
+  var clock = new THREE.Clock();
+  function frame() {
+    var dt = Math.min(clock.getDelta(), 0.05);
+    var t = clock.elapsedTime;
+    var p = progress();
+    var motion = reduce ? 0 : 1;
+
+    var target = reduce ? 1 : 0.35 + 0.65 * smooth(0, 0.4, p);
+    bloom += (target - bloom) * 0.05;
+    setBloom(bloom);
+
+    mouse.x += (mouseT.x - mouse.x) * 0.05;
+    mouse.y += (mouseT.y - mouse.y) * 0.05;
+
+    if (view.narrow) {
+      flower.scale.setScalar(0.62);
+      flower.position.set(0, view.h * 0.2 + p * 1.5, 0);
+    } else {
+      flower.scale.setScalar(0.92);
+      flower.position.set(view.w * 0.24, -0.15 + p * 0.6, 0);
+    }
+    flower.position.y += Math.sin(t * 0.8) * 0.08 * motion;
+    flower.rotation.y = (p * Math.PI * 1.2 + mouse.x * 0.35) * (reduce ? 0.3 : 1);
+    flower.rotation.z = Math.sin(t * 0.6) * 0.04 * motion;
+    head.rotation.x = 0.85 + mouse.y * 0.12;
+    leaves[0].rotation.x = -0.55 + Math.sin(t * 1.1) * 0.06 * motion;
+    leaves[1].rotation.x = -0.5 + Math.sin(t * 0.9 + 1) * 0.06 * motion;
+
+    var halfW = view.w / 2 + 6;
+    clouds.forEach(function (c) {
+      c.position.x += c.userData.speed * dt * motion;
+      if (c.position.x > halfW + 4) c.position.x = -halfW - 4;
+      c.position.y = c.userData.baseY + p * 3.5 + Math.sin(t * 0.3 + c.userData.phase) * 0.12 * motion;
+    });
+
+    drift.forEach(function (d) {
+      var u = d.userData;
+      d.position.y -= u.fall * dt * motion;
+      d.position.x += Math.sin(t * 0.7 + u.sway) * 0.004 * motion;
+      d.rotation.x += u.spin * dt * motion;
+      d.rotation.z += u.spin * 0.6 * dt * motion;
+      if (d.position.y < -view.h / 2 - 1) d.position.y = view.h / 2 + 1;
+    });
+
+    camera.position.x = mouse.x * 0.3 * motion;
+    camera.position.y = -mouse.y * 0.2 * motion;
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</html>
