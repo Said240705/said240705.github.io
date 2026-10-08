@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Опора — спецтехника</title>
+<meta name="description" content="Обеспечиваем строительные объекты спецтехникой: подбор, мобилизация, контроль и замена при поломке.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: dark industrial hero with drawn excavator + live fleet panel, process timeline, equipment grid, request form. Graphite + signal orange. */
+:root {
+  --bg: #121417; --panel: #1b1f24; --line: #2c3239; --fg: #eef1f4; --muted: #9aa3ad; --orange: #ff7a1a; --orange-ink: #1a0c00; --ok: #3ccf8e; --warn: #ffc23d;
+  --f-head: "Oswald", "Arial Narrow", sans-serif; --f-body: "Inter Tight", system-ui, sans-serif; --f-mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: clip; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 var(--f-body); }
+.wrap { max-width: 1200px; margin: 0 auto; padding-inline: 20px; }
+h1, h2, h3 { font-family: var(--f-head); font-weight: 600; text-transform: uppercase; margin: 0; line-height: 1.02; letter-spacing: 0.01em; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button, input, select { font: inherit; color: inherit; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+.mono { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: rgba(18, 20, 23, 0.9); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 28px; padding-block: 14px; }
+.logo { font-family: var(--f-head); font-size: 1.5rem; letter-spacing: 0.06em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.logo i { width: 14px; height: 14px; background: var(--orange); transform: rotate(45deg); }
+.top nav { display: flex; gap: 24px; margin-left: auto; font-size: 0.95rem; color: var(--muted); }
+.top nav a { text-decoration: none; }
+.top nav a:hover { color: var(--fg); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 4px; font-weight: 600; text-decoration: none; background: var(--orange); color: var(--orange-ink); border: 2px solid var(--orange); cursor: pointer; transition: transform .15s ease; white-space: nowrap; }
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn.sm { padding: 10px 18px; font-size: 0.92rem; }
+
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); background: radial-gradient(circle at 75% 40%, #23292f 0%, var(--bg) 60%); }
+.hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 48px 48px; opacity: 0.35; mask-image: linear-gradient(90deg, transparent, #000 60%); }
+.hero .wrap { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 32px; align-items: center; padding-block: 64px 72px; }
+.hero h1 { font-size: clamp(2.6rem, 6.4vw, 5rem); margin-top: 16px; }
+.hero h1 span { color: var(--orange); }
+.lede { margin-top: 20px; font-size: 1.12rem; color: var(--muted); max-width: 32em; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+.chain { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 36px; font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.chain b { border: 1px solid var(--line); padding: 6px 10px; border-radius: 3px; font-weight: 500; }
+.chain b.on { border-color: var(--orange); color: var(--orange); }
+.chain i { color: var(--muted); font-style: normal; }
+
+.visual { position: relative; display: grid; gap: 16px; }
+.visual svg { width: 100%; height: auto; display: block; }
+.fleet { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; display: grid; gap: 14px; }
+.fleet .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kpis div { background: var(--bg); border-radius: 6px; padding: 10px 12px; display: grid; }
+.kpis b { font-family: var(--f-head); font-size: 1.6rem; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.kpis span { font-size: 0.75rem; color: var(--muted); }
+.kpis .ok b { color: var(--ok); } .kpis .warn b { color: var(--warn); } .kpis .acc b { color: var(--orange); }
+.demo { font-family: var(--f-mono); font-size: 0.68rem; color: var(--muted); border: 1px dashed var(--line); padding: 3px 7px; border-radius: 3px; }
+
+section { scroll-margin-top: 72px; }
+.block { padding-block: 88px 0; }
+.block h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); margin-top: 12px; }
+.block .sub { color: var(--muted); max-width: 40em; margin-top: 14px; font-size: 1.05rem; }
+
+.steps { list-style: none; padding: 0; margin: 40px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--line); }
+.steps li { position: relative; padding: 26px 22px 0 0; display: grid; gap: 8px; }
+.steps li::before { content: ""; position: absolute; top: -8px; left: 0; width: 14px; height: 14px; background: var(--orange); transform: rotate(45deg); }
+.steps .n { font-family: var(--f-mono); color: var(--orange); font-size: 0.85rem; }
+.steps b { font-family: var(--f-head); font-weight: 500; font-size: 1.35rem; text-transform: uppercase; letter-spacing: 0.02em; }
+.steps p { color: var(--muted); font-size: 0.95rem; }
+
+.equip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: grid; gap: 12px; align-content: start; transition: border-color .2s ease, transform .2s ease; }
+.card:hover { border-color: var(--orange); transform: translateY(-3px); }
+.card svg { width: 64px; height: 44px; color: var(--orange); }
+.card h3 { font-size: 1.3rem; }
+.card p { color: var(--muted); font-size: 0.92rem; }
+.card .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.card .tags span { font-family: var(--f-mono); font-size: 0.7rem; border: 1px solid var(--line); border-radius: 3px; padding: 2px 6px; color: var(--muted); }
+
+.req { margin-top: 88px; border-top: 1px solid var(--line); background: var(--panel); }
+.req .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding-block: 72px; }
+.req h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); margin-top: 12px; }
+form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+form .full { grid-column: 1 / -1; }
+.inp { display: grid; gap: 6px; font-size: 0.88rem; color: var(--muted); }
+.inp input, .inp select { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 13px 14px; color: var(--fg); min-width: 0; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 0.85rem; color: var(--muted); }
+.check input { accent-color: var(--orange); margin-top: 3px; }
+.status { min-height: 1.5em; color: var(--ok); font-weight: 600; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.88rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 22px; }
+
+@media (max-width: 980px) {
+  .hero .wrap, .req .wrap { grid-template-columns: minmax(0, 1fr); }
+  .steps, .equip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps li:nth-child(n+3) { margin-top: 28px; }
+}
+@media (max-width: 620px) {
+  .top nav { display: none; }
+  .top .btn { margin-left: auto; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps { grid-template-columns: minmax(0, 1fr); border-top: 0; border-left: 2px solid var(--line); padding-left: 22px; }
+  .steps li { padding-top: 0; margin-top: 26px; }
+  .steps li::before { left: -30px; top: 6px; }
+  .equip, form { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn, .card { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><i></i>ОПОРА</a>
+    <nav aria-label="Разделы"><a href="#how">Как работаем</a><a href="#equip">Техника</a><a href="#req">Контакты</a></nav>
+    <a class="btn sm" href="#req">Получить расчёт</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="mono">Механизация строительных объектов</span>
+      <h1>Техника на объекте <span>без простоев</span></h1>
+      <p class="lede">Закрываем потребность стройки в технике — от одного экскаватора до полного парка. Подбираем, привозим, контролируем и меняем технику при поломке.</p>
+      <div class="actions"><a class="btn" href="#req">Получить расчёт</a><a class="btn ghost" href="#how">Как мы работаем</a></div>
+      <div class="chain" aria-label="Схема работы"><b>Заказчик</b><i>→</i><b class="on">Опора</b><i>→</i><b>Парк техники</b><i>→</i><b>Объект</b></div>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 520 250" aria-hidden="true">
+        <rect x="0" y="222" width="520" height="4" fill="#2c3239"/>
+        <rect x="70" y="178" width="230" height="40" rx="20" fill="#2a2f35"/>
+        <g fill="#121417"><circle cx="100" cy="198" r="14"/><circle cx="145" cy="198" r="14"/><circle cx="190" cy="198" r="14"/><circle cx="235" cy="198" r="14"/><circle cx="275" cy="198" r="14"/></g>
+        <rect x="95" y="150" width="190" height="30" rx="4" fill="#ff7a1a"/>
+        <path d="M120 150 V92 h70 l24 58Z" fill="#ff7a1a"/>
+        <path d="M130 100 h52 l16 42 h-68Z" fill="#9fc2d6" opacity=".55"/>
+        <rect x="230" y="128" width="58" height="22" fill="#d9661a"/>
+        <path d="M280 140 L380 58 L400 72 L304 150Z" fill="#ff8c33"/>
+        <path d="M380 58 L470 120 L456 134 L388 82Z" fill="#ff8c33"/>
+        <path d="M456 128 l34 22 -6 40 -40 -4 -4 -30Z" fill="#3a4047"/>
+        <circle cx="388" cy="66" r="8" fill="#121417"/><circle cx="290" cy="145" r="7" fill="#121417"/>
+      </svg>
+      <div class="fleet">
+        <div class="head"><span class="mono">Парк объекта · 32 единицы</span><span class="demo">демо-данные</span></div>
+        <div class="kpis">
+          <div class="ok"><b>27</b><span>работает</span></div>
+          <div class="warn"><b>2</b><span>в ремонте</span></div>
+          <div><b>3</b><span>в пути</span></div>
+          <div class="acc"><b>96%</b><span>доступность</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section class="wrap block" id="how" aria-labelledby="how-h">
+    <span class="mono">Как работаем</span>
+    <h2 id="how-h">Четыре шага до работающей техники</h2>
+    <ol class="steps">
+      <li><span class="n">01</span><b>Заявка и расчёт</b><p>Считаем потребность объекта в технике и стоимость за 1 день.</p></li>
+      <li><span class="n">02</span><b>Подбор и проверка</b><p>Подбираем технику у партнёров и проверяем её состояние до выезда.</p></li>
+      <li><span class="n">03</span><b>Мобилизация</b><p>Доставляем на объект с операторами и документами.</p></li>
+      <li><span class="n">04</span><b>Контроль и замена</b><p>Следим за моточасами и простоями, при поломке меняем технику.</p></li>
+    </ol>
+  </section>
+
+  <section class="wrap block" id="equip" aria-labelledby="eq-h">
+    <span class="mono">Техника</span>
+    <h2 id="eq-h">Что можем поставить</h2>
+    <div class="equip">
+      <article class="card"><svg viewBox="0 0 64 44" aria-hidden="true"><path d="M6 34h30v6H6zM10 24h22v10H10zM14 12h12v12H14zM32 26 46 10l6 4-12 16zM46 10l12 12-4 4" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg><h3>Экскаваторы</h3><p>Гусеничные и колёсные, от 5 до 50 тонн.</p><div class="tags"><span>0,2–3 м³</span><span>с оператором</span></div></article>
+      <article class="card"><svg viewBox="0 0 64 44" aria-hidden="true"><path d="M8 30h34v6H8zM14 18h18v12H14zM42 30l10-12h6v12" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="38" r="4" fill="currentColor"/><circle cx="36" cy="38" r="4" fill="currentColor"/></svg><h3>Погрузчики</h3><p>Фронтальные и телескопические, мини-погрузчики.</p><div class="tags"><span>1–5 т</span><span>посменно</span></div></article>
+      <article class="card"><svg viewBox="0 0 64 44" aria-hidden="true"><path d="M4 32h40V14H4zM44 20h10l6 8v4H44z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="14" cy="36" r="4" fill="currentColor"/><circle cx="50" cy="36" r="4" fill="currentColor"/></svg><h3>Самосвалы</h3><p>Вывоз грунта и доставка сыпучих материалов.</p><div class="tags"><span>10–30 м³</span><span>рейсами</span></div></article>
+      <article class="card"><svg viewBox="0 0 64 44" aria-hidden="true"><path d="M12 40V6h4v34M16 8h40M50 8v14M8 40h16" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><rect x="46" y="22" width="8" height="6" fill="currentColor"/></svg><h3>Краны</h3><p>Автокраны и манипуляторы для монтажа.</p><div class="tags"><span>25–100 т</span><span>с допуском</span></div></article>
+    </div>
+  </section>
+</main>
+
+<section class="req" id="req" aria-labelledby="req-h">
+  <div class="wrap">
+    <div>
+      <span class="mono">Заявка</span>
+      <h2 id="req-h">Получите расчёт за 1 день</h2>
+      <p class="sub" style="color:var(--muted);margin-top:14px;max-width:30em">Опишите объект и нужную технику — инженер свяжется, уточнит детали и пришлёт расчёт.</p>
+    </div>
+    <form id="lead" novalidate>
+      <label class="inp">Имя *<input id="n" type="text" autocomplete="name" required></label>
+      <label class="inp">Телефон *<input id="t" type="tel" autocomplete="tel" placeholder="+7" required></label>
+      <label class="inp">Город / объект *<input id="c" type="text" required></label>
+      <label class="inp">Какая техника нужна<select id="e"><option>Экскаватор</option><option>Погрузчик</option><option>Самосвал</option><option>Кран</option><option>Несколько видов</option></select></label>
+      <label class="check full"><input type="checkbox" id="ag"><span>Я согласен на обработку персональных данных</span></label>
+      <button class="btn full" type="submit">Получить расчёт</button>
+      <p class="status full" id="st" role="status"></p>
+    </form>
+  </div>
+</section>
+<footer><div class="wrap"><span>© 2026 Опора</span><span>Управление строительной техникой</span></div></footer>
+
+<script>
+document.getElementById('lead').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var st = document.getElementById('st');
+  if (!document.getElementById('n').value.trim() || !document.getElementById('c').value.trim()) { st.textContent = 'Заполните имя и город или объект.'; return; }
+  if (document.getElementById('t').value.replace(/\D/g, '').length < 10) { st.textContent = 'Проверьте номер телефона.'; return; }
+  if (!document.getElementById('ag').checked) { st.textContent = 'Отметьте согласие на обработку данных.'; return; }
+  st.textContent = 'Спасибо! Заявка принята, инженер свяжется с вами.';
+  this.reset();
+});
+</script>
+</body>
+</html>

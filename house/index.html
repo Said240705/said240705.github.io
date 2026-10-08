@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Кедровый двор</title>
+<meta name="description" content="Строим загородные дома под ключ: брус, каркас, газобетон. Калькулятор стоимости, проекты и видео со строек.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: split hero with an illustrated house, then calculator panel, project grid, video wall, contact form. Pine green + timber amber on cool stone. */
+:root {
+  --bg: #f0f2f0;
+  --surface: #ffffff;
+  --ink: #17231e;
+  --muted: #5a6862;
+  --line: #d6ddd9;
+  --pine: #1f3d33;
+  --amber: #c9862a;
+  --amber-ink: #1b1306;
+  --f-display: "Tenor Sans", "Georgia", serif;
+  --f-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: clip; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--f-body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 400; margin: 0; line-height: 1.08; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button, input, select { font: inherit; color: inherit; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.eyebrow { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; color: var(--amber); }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--pine); color: #eef3f0; }
+.top .wrap { display: flex; align-items: center; gap: 28px; padding-block: 14px; }
+.brand { font-family: var(--f-display); font-size: 1.3rem; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.brand svg { width: 28px; height: 28px; }
+.top nav { display: flex; gap: 22px; margin-left: auto; font-size: 0.95rem; }
+.top nav a { text-decoration: none; opacity: 0.85; }
+.top nav a:hover { opacity: 1; }
+.phone { font-weight: 700; text-decoration: none; white-space: nowrap; }
+
+.hero { background: var(--pine); color: #eef3f0; overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; padding-block: 56px 0; }
+.hero h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); }
+.hero h1 em { font-style: normal; color: var(--amber); }
+.hero .lede { margin-top: 20px; font-size: 1.12rem; opacity: 0.85; max-width: 32em; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 26px; border-radius: 10px; font-weight: 700; text-decoration: none; border: 2px solid var(--amber); background: var(--amber); color: var(--amber-ink); cursor: pointer; transition: transform .15s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: inherit; border-color: rgba(238, 243, 240, 0.4); }
+.stats { display: flex; gap: 36px; flex-wrap: wrap; margin-block: 40px 56px; }
+.stats b { display: block; font-family: var(--f-display); font-size: 2.2rem; font-weight: 400; color: var(--amber); font-variant-numeric: tabular-nums; }
+.stats span { font-size: 0.88rem; opacity: 0.75; }
+.scene { align-self: end; max-width: 100%; }
+.scene svg { display: block; width: 100%; height: auto; }
+
+section { scroll-margin-top: 72px; }
+.block { padding-block: 88px 0; }
+.block h2 { font-size: clamp(2rem, 4.2vw, 3rem); margin-top: 10px; }
+.block .sub { color: var(--muted); max-width: 40em; margin-top: 14px; font-size: 1.05rem; }
+
+/* Calculator */
+.calc { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 0; margin-top: 36px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.calc .controls { padding: 32px; display: grid; gap: 26px; }
+.field { display: grid; gap: 10px; }
+.field > span { font-weight: 600; }
+.row-between { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.row-between output { font-family: var(--f-display); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--amber); }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.seg.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { border: 1.5px solid var(--line); border-radius: 10px; padding: 12px; cursor: pointer; display: grid; gap: 2px; text-align: center; }
+.seg label small { color: var(--muted); font-size: 0.8rem; }
+.seg input:checked + label { border-color: var(--pine); background: color-mix(in srgb, var(--pine) 8%, transparent); }
+.seg input:focus-visible + label { outline: 2px solid var(--amber); outline-offset: 2px; }
+.calc .result { background: var(--pine); color: #eef3f0; padding: 32px; display: grid; gap: 18px; align-content: start; }
+.price { font-family: var(--f-display); font-size: clamp(2.2rem, 4.5vw, 3.2rem); color: var(--amber); font-variant-numeric: tabular-nums; line-height: 1; }
+.lines { display: grid; gap: 8px; font-size: 0.95rem; }
+.lines div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid rgba(238, 243, 240, 0.15); padding-bottom: 8px; font-variant-numeric: tabular-nums; }
+.lines div span:first-child { opacity: 0.75; }
+.result small { opacity: 0.7; }
+
+/* Projects */
+.projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 36px; }
+.proj { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: grid; }
+.proj .pic { aspect-ratio: 4 / 3; max-width: 100%; display: grid; place-items: end center; }
+.proj .pic svg { width: 100%; height: 100%; }
+.proj .body { padding: 20px; display: grid; gap: 10px; }
+.proj h3 { font-size: 1.45rem; }
+.specs { display: flex; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 0.9rem; }
+.proj .foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 4px; }
+.proj .foot b { font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.proj .foot button { border: 0; background: none; color: var(--pine); font-weight: 700; cursor: pointer; padding: 6px 0; }
+
+/* Video */
+.videos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
+.vid { border-radius: 14px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); display: grid; }
+.vid .frame { aspect-ratio: 16 / 10; max-width: 100%; position: relative; display: grid; place-items: center; background: linear-gradient(160deg, #2c4a3f, #12241d); color: #fff; }
+.vid .frame .play { width: 54px; height: 54px; border-radius: 50%; background: rgba(255, 255, 255, 0.92); display: grid; place-items: center; }
+.vid .frame .play::after { content: ""; border-left: 16px solid var(--pine); border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 4px; }
+.vid .frame .tag { position: absolute; left: 10px; top: 10px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(0, 0, 0, 0.45); padding: 4px 8px; border-radius: 6px; }
+.vid .frame .live { background: #d23b2f; display: flex; align-items: center; gap: 6px; }
+.vid .frame .live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: blink 1.4s infinite; }
+.vid .frame .time { position: absolute; right: 10px; bottom: 10px; font-size: 0.78rem; background: rgba(0, 0, 0, 0.5); padding: 2px 7px; border-radius: 5px; font-variant-numeric: tabular-nums; }
+.vid .cap { padding: 14px 16px; display: grid; gap: 2px; }
+.vid .cap b { font-weight: 600; }
+.vid .cap span { color: var(--muted); font-size: 0.88rem; }
+@keyframes blink { 50% { opacity: 0.2; } }
+
+/* Contact */
+.contact { margin-top: 88px; background: var(--surface); border-top: 1px solid var(--line); }
+.contact .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding-block: 72px; }
+.contact h2 { font-size: clamp(2rem, 4.2vw, 3rem); margin-top: 10px; }
+.contact ul { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; color: var(--muted); }
+.contact li b { color: var(--ink); }
+form { display: grid; gap: 14px; }
+.inp { display: grid; gap: 6px; font-weight: 600; font-size: 0.92rem; }
+.inp input { padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); font-weight: 400; min-width: 0; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 0.85rem; color: var(--muted); font-weight: 400; }
+.check input { margin-top: 3px; accent-color: var(--pine); }
+.status { min-height: 1.5em; font-weight: 600; color: var(--pine); }
+footer { background: var(--pine); color: rgba(238, 243, 240, 0.75); font-size: 0.88rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 22px; }
+
+@media (max-width: 960px) {
+  .hero .wrap, .calc, .contact .wrap { grid-template-columns: minmax(0, 1fr); }
+  .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .videos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { margin-bottom: 8px; }
+}
+@media (max-width: 620px) {
+  .top nav { display: none; }
+  .phone { margin-left: auto; font-size: 0.9rem; }
+  .projects, .videos { grid-template-columns: minmax(0, 1fr); }
+  .calc .controls, .calc .result { padding: 22px; }
+  .seg label { padding: 10px 6px; font-size: 0.9rem; }
+  .stats { gap: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } .vid .frame .live::before { animation: none; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 3 25 12v13H3V12Z" fill="none" stroke="#c9862a" stroke-width="2.2" stroke-linejoin="round"/><path d="M10 25v-7h8v7" fill="none" stroke="#eef3f0" stroke-width="2"/></svg>
+      Кедровый двор
+    </a>
+    <nav aria-label="Разделы">
+      <a href="#calc">Калькулятор</a>
+      <a href="#projects">Проекты</a>
+      <a href="#video">Видео</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+    <span class="phone">+7 (000) 000-00-00</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Загородные дома под ключ</span>
+      <h1 style="margin-top:14px">Дом, в котором <em>тепло</em> с первой зимы</h1>
+      <p class="lede">Строим из бруса, каркаса и газобетона. Фиксируем цену в договоре, показываем стройку онлайн с камер и сдаём дом с гарантией 10 лет.</p>
+      <div class="actions">
+        <a class="btn" href="#calc">Рассчитать стоимость</a>
+        <a class="btn ghost" href="#projects">Смотреть проекты</a>
+      </div>
+      <div class="stats">
+        <div><b>148</b><span>домов построено</span></div>
+        <div><b>4 мес.</b><span>средний срок стройки</span></div>
+        <div><b>10 лет</b><span>гарантия на конструктив</span></div>
+      </div>
+    </div>
+    <div class="scene" aria-hidden="true">
+      <svg viewBox="0 0 560 420">
+        <circle cx="430" cy="90" r="46" fill="#c9862a" opacity=".9"/>
+        <path d="M0 330 Q140 280 280 320 T560 300 V420 H0Z" fill="#2a5244"/>
+        <path d="M40 330 l26-90 26 90Z M70 330 l20-66 20 66Z" fill="#183229"/>
+        <path d="M470 320 l24-84 24 84Z M500 322 l18-60 18 60Z" fill="#183229"/>
+        <rect x="150" y="210" width="260" height="130" fill="#e7d5b8"/>
+        <g stroke="#c6ab83" stroke-width="2">
+          <line x1="150" y1="228" x2="410" y2="228"/><line x1="150" y1="246" x2="410" y2="246"/><line x1="150" y1="264" x2="410" y2="264"/>
+          <line x1="150" y1="282" x2="410" y2="282"/><line x1="150" y1="300" x2="410" y2="300"/><line x1="150" y1="318" x2="410" y2="318"/>
+        </g>
+        <path d="M130 214 280 120 430 214Z" fill="#3b2a20"/>
+        <path d="M232 214 280 184 328 214Z" fill="#e7d5b8"/>
+        <rect x="180" y="240" width="56" height="46" rx="3" fill="#f6c46a"/><rect x="324" y="240" width="56" height="46" rx="3" fill="#f6c46a"/>
+        <path d="M208 240v46M180 263h56M352 240v46M324 263h56" stroke="#3b2a20" stroke-width="3"/>
+        <rect x="258" y="262" width="44" height="78" rx="2" fill="#3b2a20"/>
+        <rect x="140" y="338" width="280" height="10" fill="#9aa39e"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section class="wrap block" id="calc" aria-labelledby="calc-h">
+    <span class="eyebrow">Калькулятор</span>
+    <h2 id="calc-h">Сколько стоит ваш дом</h2>
+    <p class="sub">Подвигайте параметры, чтобы получить предварительную стоимость. Точную смету инженер посчитает бесплатно по вашему участку.</p>
+    <div class="calc">
+      <div class="controls">
+        <div class="field">
+          <div class="row-between"><span>Площадь дома</span><output id="areaOut">120 м²</output></div>
+          <input type="range" id="area" min="40" max="300" step="5" value="120" aria-label="Площадь дома, м²">
+        </div>
+        <fieldset class="field" style="border:0;padding:0;margin:0">
+          <legend style="font-weight:600;margin-bottom:10px">Материал стен</legend>
+          <div class="seg">
+            <input type="radio" name="mat" id="m1" value="beam" checked><label for="m1">Брус<small>от 32 000 ₽/м²</small></label>
+            <input type="radio" name="mat" id="m2" value="frame"><label for="m2">Каркас<small>от 26 000 ₽/м²</small></label>
+            <input type="radio" name="mat" id="m3" value="block"><label for="m3">Газобетон<small>от 38 000 ₽/м²</small></label>
+          </div>
+        </fieldset>
+        <fieldset class="field" style="border:0;padding:0;margin:0">
+          <legend style="font-weight:600;margin-bottom:10px">Этажность</legend>
+          <div class="seg two">
+            <input type="radio" name="fl" id="f1" value="1" checked><label for="f1">1 этаж</label>
+            <input type="radio" name="fl" id="f2" value="2"><label for="f2">2 этажа<small>−6% за м²</small></label>
+          </div>
+        </fieldset>
+        <fieldset class="field" style="border:0;padding:0;margin:0">
+          <legend style="font-weight:600;margin-bottom:10px">Фундамент</legend>
+          <div class="seg">
+            <input type="radio" name="fd" id="d1" value="pile" checked><label for="d1">Сваи<small>винтовые</small></label>
+            <input type="radio" name="fd" id="d2" value="strip"><label for="d2">Лента<small>мелкозаглубл.</small></label>
+            <input type="radio" name="fd" id="d3" value="slab"><label for="d3">Плита<small>УШП</small></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="result" aria-live="polite">
+        <span class="eyebrow" style="color:#e9c58a">Предварительно</span>
+        <div class="price" id="total">—</div>
+        <div class="lines">
+          <div><span>Коробка и кровля</span><span id="lBox">—</span></div>
+          <div><span>Фундамент</span><span id="lFd">—</span></div>
+          <div><span>Срок строительства</span><span id="lTime">—</span></div>
+        </div>
+        <a class="btn" href="#contact" id="toForm">Получить точную смету</a>
+        <small>Расчёт примерный. Цены для демонстрации калькулятора.</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap block" id="projects" aria-labelledby="proj-h">
+    <span class="eyebrow">Проекты</span>
+    <h2 id="proj-h">Готовые проекты домов</h2>
+    <p class="sub">Любой проект адаптируем под ваш участок и бюджет: переставим стены, добавим террасу или второй свет.</p>
+    <div class="projects" id="projGrid"></div>
+  </section>
+
+  <section class="wrap block" id="video" aria-labelledby="vid-h">
+    <span class="eyebrow">Видео</span>
+    <h2 id="vid-h">Стройка без сюрпризов</h2>
+    <p class="sub">Обзоры готовых домов, отзывы клиентов и трансляции с камер на объектах. Следите за своим домом из любой точки.</p>
+    <div class="videos">
+      <div class="vid"><div class="frame"><span class="tag live">В эфире</span><div class="play"></div></div><div class="cap"><b>Камера: дом «Сосны»</b><span>Истра · монтаж кровли</span></div></div>
+      <div class="vid"><div class="frame"><span class="tag">Обзор</span><div class="play"></div><span class="time">12:40</span></div><div class="cap"><b>Дом из бруса 146 м²</b><span>Готовый объект под ключ</span></div></div>
+      <div class="vid"><div class="frame"><span class="tag">Отзыв</span><div class="play"></div><span class="time">4:15</span></div><div class="cap"><b>Семья Ивановых</b><span>Год жизни в каркасном доме</span></div></div>
+      <div class="vid"><div class="frame"><span class="tag">Этапы</span><div class="play"></div><span class="time">8:02</span></div><div class="cap"><b>Фундамент на сваях</b><span>Как мы делаем за 2 дня</span></div></div>
+    </div>
+  </section>
+</main>
+
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Заявка</span>
+      <h2 id="contact-h">Посчитаем смету бесплатно</h2>
+      <p class="sub" style="color:var(--muted);margin-top:14px">Оставьте телефон: инженер перезвонит в течение 15 минут, уточнит параметры и пришлёт смету.</p>
+      <ul>
+        <li><b>Телефон:</b> +7 (000) 000-00-00</li>
+        <li><b>Офис:</b> ул. Примерная, 5, ежедневно 9:00–20:00</li>
+        <li><b>Выезд на участок:</b> бесплатно в пределах 100 км</li>
+      </ul>
+    </div>
+    <form id="lead" novalidate>
+      <label class="inp">Имя<input type="text" id="name" name="name" autocomplete="name" required></label>
+      <label class="inp">Телефон<input type="tel" id="tel" name="tel" autocomplete="tel" placeholder="+7" required></label>
+      <label class="inp">Ваш расчёт<input type="text" id="calcSummary" name="calc" readonly></label>
+      <label class="check"><input type="checkbox" id="agree" required><span>Я согласен на обработку персональных данных</span></label>
+      <button class="btn" type="submit">Получить смету</button>
+      <p class="status" id="status" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© 2026 Кедровый двор</span><span>Строительство загородных домов</span></div></footer>
+
+<script>
+var PRICE = { beam: 32000, frame: 26000, block: 38000 };
+var MAT = { beam: 'брус', frame: 'каркас', block: 'газобетон' };
+var FD = { pile: { name: 'сваи', base: 180000, perM: 2200 }, strip: { name: 'лента', base: 320000, perM: 4800 }, slab: { name: 'плита УШП', base: 420000, perM: 6900 } };
+function rub(n) { return Math.round(n / 1000) * 1000 > 0 ? (Math.round(n / 1000) * 1000).toLocaleString('ru-RU') + ' ₽' : '—'; }
+function val(name) { return document.querySelector('input[name="' + name + '"]:checked').value; }
+
+function calc() {
+  var a = +document.getElementById('area').value, m = val('mat'), f = +val('fl'), d = val('fd');
+  var perM = PRICE[m] * (f === 2 ? 0.94 : 1);
+  var box = a * perM;
+  var footprint = f === 2 ? a / 2 : a;
+  var fd = FD[d].base + footprint * FD[d].perM;
+  var months = Math.max(2, Math.round((a / 45 + (m === 'block' ? 1.5 : 0.5)) * 10) / 10);
+  document.getElementById('areaOut').textContent = a + ' м²';
+  document.getElementById('total').textContent = rub(box + fd);
+  document.getElementById('lBox').textContent = rub(box);
+  document.getElementById('lFd').textContent = rub(fd);
+  document.getElementById('lTime').textContent = String(months).replace('.', ',') + ' мес.';
+  document.getElementById('calcSummary').value = a + ' м², ' + MAT[m] + ', ' + f + ' эт., ' + FD[d].name + ' — ' + rub(box + fd);
+}
+document.querySelector('.calc').addEventListener('input', calc);
+calc();
+
+// Projects
+var PROJECTS = [
+  { name: 'Сосны', area: 146, fl: 2, rooms: 4, mat: 'Брус', price: 5100000, roof: '#3b2a20', wall: '#e7d5b8', bg: '#dfe8e3' },
+  { name: 'Ока', area: 98, fl: 1, rooms: 3, mat: 'Каркас', price: 2950000, roof: '#2f3b45', wall: '#f2f0ea', bg: '#e3e7ec' },
+  { name: 'Лесная', area: 182, fl: 2, rooms: 5, mat: 'Газобетон', price: 7400000, roof: '#4a3226', wall: '#ebe6dc', bg: '#ece6dc' },
+  { name: 'Барн', area: 120, fl: 1, rooms: 3, mat: 'Каркас', price: 3600000, roof: '#1e2622', wall: '#2f4a3f', bg: '#dde6e0' },
+  { name: 'Усадьба', area: 240, fl: 2, rooms: 6, mat: 'Брус', price: 8900000, roof: '#5a2f24', wall: '#e3cfae', bg: '#efe7d9' },
+  { name: 'Компакт', area: 64, fl: 1, rooms: 2, mat: 'Каркас', price: 1900000, roof: '#33403a', wall: '#f0ece4', bg: '#e6ebe8' }
+];
+function houseSVG(p) {
+  var two = p.fl === 2, w = 120 + Math.min(p.area, 240) * 0.45, x = 200 - w / 2, h = two ? 110 : 70, y = 220 - h;
+  var win = '';
+  var cols = Math.max(2, Math.round(w / 55));
+  for (var r = 0; r < (two ? 2 : 1); r++) for (var c = 0; c < cols; c++) {
+    win += '<rect x="' + (x + 18 + c * ((w - 36) / cols)) + '" y="' + (y + 16 + r * 50) + '" width="' + ((w - 36) / cols - 14) + '" height="28" rx="2" fill="#f6c46a"/>';
+  }
+  return '<svg viewBox="0 0 400 300" aria-hidden="true"><rect width="400" height="300" fill="' + p.bg + '"/>' +
+    '<path d="M0 230 Q200 200 400 228 V300 H0Z" fill="#7f9c8c"/>' +
+    '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + p.wall + '"/>' + win +
+    '<path d="M' + (x - 14) + ' ' + (y + 4) + ' 200 ' + (y - 60) + ' ' + (x + w + 14) + ' ' + (y + 4) + 'Z" fill="' + p.roof + '"/>' +
+    '<rect x="' + (x - 6) + '" y="220" width="' + (w + 12) + '" height="8" fill="#9aa39e"/></svg>';
+}
+document.getElementById('projGrid').innerHTML = PROJECTS.map(function (p) {
+  return '<article class="proj"><div class="pic">' + houseSVG(p) + '</div><div class="body">' +
+    '<h3>Проект «' + p.name + '»</h3>' +
+    '<div class="specs"><span>' + p.area + ' м²</span><span>' + p.fl + (p.fl === 1 ? ' этаж' : ' этажа') + '</span><span>' + p.rooms + ' комн.</span><span>' + p.mat + '</span></div>' +
+    '<div class="foot"><b>от ' + p.price.toLocaleString('ru-RU') + ' ₽</b><button type="button" data-p="' + p.name + '">Хочу такой →</button></div>' +
+    '</div></article>';
+}).join('');
+document.getElementById('projGrid').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-p]'); if (!b) return;
+  document.getElementById('calcSummary').value = 'Проект «' + b.dataset.p + '»';
+  document.getElementById('contact').scrollIntoView();
+  document.getElementById('name').focus({ preventScroll: true });
+});
+
+// Lead form (demo: no backend)
+document.getElementById('lead').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var st = document.getElementById('status');
+  var tel = document.getElementById('tel').value.replace(/\D/g, '');
+  if (!document.getElementById('name').value.trim()) { st.textContent = 'Укажите, как к вам обращаться.'; return; }
+  if (tel.length < 10) { st.textContent = 'Проверьте номер телефона: нужно 10–11 цифр.'; return; }
+  if (!document.getElementById('agree').checked) { st.textContent = 'Отметьте согласие на обработку данных.'; return; }
+  st.textContent = 'Заявка отправлена. Инженер перезвонит в течение 15 минут.';
+  this.reset(); calc();
+});
+</script>
+</body>
+</html>
