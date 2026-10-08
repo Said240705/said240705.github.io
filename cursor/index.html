@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Курсор-огонёк</title>
+<style>
+:root { --bg: #14110f; --fg: #f4ece4; --muted: #a8998c; --card: #1f1a17; --line: #352c26; --accent: #ff8a2a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 20px; padding-block: 72px; }
+h1 { font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.1; margin: 0; }
+h1 span { color: var(--accent); }
+p { color: var(--muted); max-width: 34em; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+a.btn, button { font: inherit; font-weight: 600; padding: 14px 24px; border-radius: 999px; border: 1.5px solid var(--accent); background: var(--accent); color: #1a0e05; text-decoration: none; }
+button.ghost { background: transparent; color: var(--accent); }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 48px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+.card b { display: block; margin-bottom: 6px; }
+.card p { margin: 0; font-size: 0.95rem; }
+input { margin-top: 40px; width: 100%; max-width: 420px; font: inherit; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--fg); }
+.note { margin-top: 40px; font-size: 0.9rem; }
+@media (max-width: 640px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Подвигайте мышкой: <span>курсор горит</span></h1>
+  <p>Пламя тянется за курсором и поднимается вверх. При наведении на кнопки и ссылки огонёк разгорается, при клике разлетаются искры.</p>
+  <div class="row">
+    <a class="btn" href="#">Наведите на кнопку</a>
+    <button class="ghost" type="button">Кликните здесь</button>
+  </div>
+  <div class="grid">
+    <div class="card"><b>Лёгкий</b><p>Один небольшой скрипт без библиотек, на скорость сайта не влияет.</p></div>
+    <div class="card"><b>Аккуратный</b><p>Выключается на телефонах и у тех, кто отключил анимацию в системе.</p></div>
+    <div class="card"><b>Удобный</b><p>В полях ввода остаётся обычный текстовый курсор.</p></div>
+  </div>
+  <input type="text" placeholder="В поле ввода курсор обычный">
+  <p class="note">Эффект работает на компьютере с мышью или тачпадом.</p>
+</div>
+<script src="fire-cursor.js"></script>
+</body>
+</html>
